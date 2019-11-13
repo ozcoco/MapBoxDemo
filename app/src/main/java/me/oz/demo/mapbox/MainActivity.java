@@ -1,82 +1,61 @@
 package me.oz.demo.mapbox;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.os.Bundle;
-
-import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.maps.MapView;
-import com.mapbox.mapboxsdk.maps.MapboxMap;
-import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
-import com.mapbox.mapboxsdk.maps.Style;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 public class MainActivity extends AppCompatActivity {
 
-    private MapView mapView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Mapbox.getInstance(this, "pk.eyJ1Ijoib3pjb21jbiIsImEiOiJjazJ2bTg3bnEwNjJhM2hscTh1ZnNvdXJuIn0.JqPTkDNCPuUe66SrCkLOUg");
+
         setContentView(R.layout.activity_main);
-        mapView = findViewById(R.id.mapView);
-        mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(@NonNull MapboxMap mapboxMap) {
-                mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
-                    @Override
-                    public void onStyleLoaded(@NonNull Style style) {
 
-// Map is set up and the style has loaded. Now you can add data or make other map adjustments.
-
-
-                    }
-                });
-            }
-        });
+        requestPermission();
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        mapView.onStart();
+
+    private void requestPermission() {
+
+        ActivityCompat.requestPermissions(this, new String[]{
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.INTERNET
+        }, 100);
+
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        mapView.onResume();
-    }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        mapView.onPause();
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        mapView.onStop();
+    private void skip(Class<? extends Activity> target) {
+
+        ContextCompat.startActivity(this, new Intent(this, target), null);
+
     }
 
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        mapView.onLowMemory();
-    }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mapView.onDestroy();
-    }
+    public void onMenuClick(View view) {
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        mapView.onSaveInstanceState(outState);
+        try {
+            skip((Class<? extends Activity>) Class.forName((String) view.getTag()));
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }

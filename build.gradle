@@ -5,11 +5,13 @@ buildscript {
     ext.objectboxVersion = '2.4.1'
 
     repositories {
-        google()
+        maven { url 'https://jitpack.io' }
+        maven { url 'https://mapbox.bintray.com/mapbox' }
         jcenter()
         mavenCentral()
-        
+        google()
     }
+
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.2'
         classpath "io.objectbox:objectbox-gradle-plugin:$objectboxVersion"
@@ -22,7 +24,7 @@ allprojects {
     repositories {
         google()
         jcenter()
-        
+
     }
 }
 
